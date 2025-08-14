@@ -1,63 +1,54 @@
-# Here we are going to develope a simple application which consists of an arithematic operation and display the logs
-# STEP-1:
-# first we are going to import the logging module
-import logging
-# Noe we have to configure the logging for the debug
-logging.basicConfig(
-    level = logging.DEBUG,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    datefmt= '%Y - %m - %d %H : %M : %S',
-    handlers = [
-        logging.FileHandler("app1.log"),
-        logging.StreamHandler()
-    ]
-)
-# Sep-2:
-# Here we are going to save all the log messages into a perticular file.
-logger = logging.getLogger('ArithematicApp')
-# Step-3:
-# Now we are going to define several functions for the logging operations
-def add(a,b):
-    result = a + b
-    logger.debug(f'Adding {a} + {b} = {result}')
-    return result
-def sub(a,b):
-    result = a - b
-    logger.debug(f'Adding {a} - {b} = {result}')
-    return result
-def mul(a,b):
-    result = a * b
-    logger.debug(f'Adding {a} * {b} = {result}')
-    return result
-def div(a,b):
-    try:
-        result = a / b
-        logger.debug(f'Adding {a} / {b} = {result}')
-        return result
-    except ZeroDivisionError:
-        logger.error("Division by zero error")
-        return None
-# first we are going to test a function which thakes a number as input parameter from the user and returns it's factorial
-def factorial(n):
-    logging.debug('Operation is taking place')
-    if n < 0:
-        return f'Factorial of {n} is not possible'
-    elif n == 0:
-        return f'Factorial of {n} becomes {1}'
+# Here we are going to create a simpleapplication in python using streamlit web framework.
+# Now we are going to import the particular libraries so for that we have
+import numpy as np
+import pandas as pd
+import streamlit as st 
+# Now we are going to define the title of the application to be buid so we have
+st.title('Hello Streamlit')
+# Now we are going to display a simple text in the web app so we have
+st.write("This is a simple text")
+# Now we are going to create a dataframe and display over the web app so we have
+d = {
+    'Name':['Subhasish','Muskan','Nibedita','Subham','Piyush'],
+    'marks':[76,94,87,84,85]
+}
+df = pd.DataFrame(d)
+st.write('Here is the dataframe')
+st.write(df)
+# Now we are going to create a simple line chart
+chart_data = pd.DataFrame(np.random.randn(20,3),columns=['a','b','c'])
+st.line_chart(chart_data)
+# Now we are going to define a simple text field such that it asks a name of a person as input from the user and if once it gets the correct string format it will display in the window.
+st.title('Streamlit text window')
+name = st.text_input('Enter your name:')
+if name:
+    st.write(f"Hello, {name}")
+# Now we are going to create the age slider such that as the slider of the pointer goes increasing the particulaar age should be display in the screen
+age = st.slider("Select your age:",0,100,25)
+st.write(f"your age is {age}")
+# Now we are going to create a selectbox where user can choose the particular language to learn, once after selecting it got displayed in the screen
+options = ['Python','C++','Java','JavaScript']
+choice = st.selectbox('Choose your favourite language:',options)
+st.write(f'you selected {choice}.')
+# Now we are going to write a program such that it asks user to upload a particular file from the local and display the content
+# Here we are going to create a function for that
+st.title("File Upload Example")
+def upload(uploaded_file):
+    if uploaded_file is not None:  # ✅ Check before accessing .name
+        st.success(f"Uploaded file: {uploaded_file.name}")
+        if uploaded_file.name.endswith(".csv"):
+            df = pd.read_csv(uploaded_file)
+            st.write("### CSV File Preview")
+            st.dataframe(df)
+        elif uploaded_file.name.endswith(".xlsx"):
+            df = pd.read_excel(uploaded_file)
+            st.write("### Excel File Preview")
+            st.dataframe(df)
+        elif uploaded_file.name.endswith(".txt"):
+            content = uploaded_file.read().decode("utf-8")
+            st.text(content)
     else:
-        return f'Factorial of {n} becomes {n*factorial(n-1)}'
-# # Simillarly we are going to create a function such that it returns the addition of two numbers and display the respective logs for it
-def addition(a,b):
-    logging.debug('Operation is taking place')
-    return a+b
-# Step-4:
-# Now we are going to call the sort of functions whatever we have defined earlier
-add(10,15)
-sub(15,10)
-mul(10,5)
-div(10,5)
-logging.debug("The factorial function is called")
-factorial(5)
-logging.debug("The addition function is called")
-addition(10,20)
-    
+        st.warning("Please upload a file to proceed.")
+uploaded_file = st.file_uploader("Choose a file", type=["csv", "txt", "xlsx"])
+upload(uploaded_file)
+ 
